@@ -2,147 +2,250 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Recordá">
+<meta name="theme-color" content="#0f0f13">
 <title>Recordá</title>
+<link rel="manifest" href="manifest.json">
+
+<!-- Icono SVG inline como favicon -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%237c6af5'/%3E%3Cstop offset='100%25' stop-color='%23a78bfa'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='22' fill='url(%23g)'/%3E%3Ccircle cx='50' cy='38' r='16' fill='white' opacity='.95'/%3E%3Crect x='46' y='54' width='8' height='14' rx='4' fill='white' opacity='.95'/%3E%3Crect x='30' y='66' width='40' height='6' rx='3' fill='white' opacity='.95'/%3E%3Ccircle cx='50' cy='38' r='8' fill='url(%23g)'/%3E%3Crect x='48' y='28' width='4' height='6' rx='2' fill='white'/%3E%3C/svg%3E">
+
+<!-- Apple touch icon inline -->
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%237c6af5'/%3E%3Cstop offset='100%25' stop-color='%23a78bfa'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='22' fill='url(%23g)'/%3E%3Ccircle cx='50' cy='38' r='16' fill='white' opacity='.95'/%3E%3Crect x='46' y='54' width='8' height='14' rx='4' fill='white' opacity='.95'/%3E%3Crect x='30' y='66' width='40' height='6' rx='3' fill='white' opacity='.95'/%3E%3Ccircle cx='50' cy='38' r='8' fill='url(%23g)'/%3E%3Crect x='48' y='28' width='4' height='6' rx='2' fill='white'/%3E%3C/svg%3E">
+
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   :root {
     --bg: #0f0f13; --surface: #1a1a22; --surface2: #22222e;
     --border: #2e2e3e; --accent: #7c6af5; --accent2: #a78bfa;
     --text: #e8e8f0; --muted: #7070a0; --success: #34d399;
     --error: #f87171; --user-bubble: #2a2440; --ai-bubble: #1e1e2a;
     --red: #ef4444;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  html, body {
+    height: 100%; width: 100%;
+    overscroll-behavior: none;
   }
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     background: var(--bg); color: var(--text);
-    height: 100dvh; display: flex; flex-direction: column; overflow: hidden;
+    display: flex; flex-direction: column;
+    height: 100dvh;
+    overflow: hidden;
+    padding-top: var(--safe-top);
+    padding-bottom: var(--safe-bottom);
   }
+
+  /* HEADER */
   .header {
-    padding: 12px 16px; display: flex; align-items: center; gap: 10px;
-    border-bottom: 1px solid var(--border); background: var(--surface); flex-shrink: 0;
+    padding: 14px 16px;
+    display: flex; align-items: center; gap: 12px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    flex-shrink: 0;
   }
-  .header-icon {
-    width: 36px; height: 36px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px;
+  .app-icon {
+    width: 40px; height: 40px; flex-shrink: 0;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #7c6af5, #a78bfa);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 12px rgba(124,106,245,0.4);
   }
-  .header-info h1 { font-size: 15px; font-weight: 600; }
-  .header-info p { font-size: 11px; color: var(--muted); }
+  .app-icon svg { width: 24px; height: 24px; }
+  .header-info { flex: 1; min-width: 0; }
+  .header-info h1 { font-size: 16px; font-weight: 700; letter-spacing: -0.3px; }
+  .header-info p { font-size: 11px; color: var(--muted); margin-top: 1px; }
+  .header-time {
+    font-size: 11px; color: var(--muted);
+    background: var(--surface2); border: 1px solid var(--border);
+    padding: 4px 8px; border-radius: 8px; flex-shrink: 0;
+  }
 
+  /* CHAT */
   .chat {
-    flex: 1; overflow-y: auto; padding: 16px;
-    display: flex; flex-direction: column; gap: 12px; scroll-behavior: smooth;
+    flex: 1; overflow-y: auto; overflow-x: hidden;
+    padding: 16px; display: flex; flex-direction: column; gap: 12px;
+    scroll-behavior: smooth; -webkit-overflow-scrolling: touch;
   }
-  .welcome {
-    text-align: center; padding: 28px 16px;
-    display: flex; flex-direction: column; align-items: center; gap: 12px;
-  }
-  .welcome-icon { font-size: 48px; filter: drop-shadow(0 0 20px rgba(124,106,245,0.4)); }
-  .welcome h2 { font-size: 20px; font-weight: 700; }
-  .welcome p { font-size: 13px; color: var(--muted); line-height: 1.5; max-width: 280px; }
-  .chips { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 8px; }
-  .chip {
-    background: var(--surface2); border: 1px solid var(--border); border-radius: 20px;
-    padding: 6px 12px; font-size: 12px; color: var(--muted); cursor: pointer; transition: all 0.15s;
-  }
-  .chip:active { border-color: var(--accent); color: var(--accent2); }
+  .chat::-webkit-scrollbar { display: none; }
 
-  .msg { display: flex; gap: 8px; max-width: 100%; }
+  /* WELCOME */
+  .welcome {
+    text-align: center; padding: 24px 8px;
+    display: flex; flex-direction: column; align-items: center; gap: 14px;
+    animation: fadeIn 0.4s ease;
+  }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+
+  .welcome-logo {
+    width: 72px; height: 72px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #7c6af5, #a78bfa);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 24px rgba(124,106,245,0.5);
+    margin-bottom: 4px;
+  }
+  .welcome-logo svg { width: 42px; height: 42px; }
+  .welcome h2 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
+  .welcome p { font-size: 13px; color: var(--muted); line-height: 1.6; max-width: 260px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 7px; justify-content: center; margin-top: 4px; }
+  .chip {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 20px; padding: 7px 13px; font-size: 12px; color: var(--muted);
+    cursor: pointer; transition: all 0.15s; user-select: none;
+  }
+  .chip:active { border-color: var(--accent); color: var(--accent2); background: var(--user-bubble); transform: scale(0.97); }
+
+  /* MESSAGES */
+  .msg { display: flex; gap: 8px; max-width: 100%; animation: msgIn 0.2s ease; }
+  @keyframes msgIn { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:none; } }
   .msg.user { flex-direction: row-reverse; }
   .bubble {
-    max-width: 85%; padding: 10px 14px; border-radius: 16px;
+    max-width: 85%; padding: 10px 14px; border-radius: 18px;
     font-size: 14px; line-height: 1.5; word-break: break-word;
   }
   .msg.user .bubble {
     background: var(--user-bubble); border: 1px solid var(--accent);
-    border-bottom-right-radius: 4px;
+    border-bottom-right-radius: 5px;
   }
   .msg.ai .bubble {
-    background: var(--ai-bubble); border: 1px solid var(--border); border-bottom-left-radius: 4px;
+    background: var(--ai-bubble); border: 1px solid var(--border);
+    border-bottom-left-radius: 5px;
   }
 
+  /* EVENT CARD */
   .event-card {
     background: var(--surface2); border: 1px solid var(--accent);
-    border-radius: 12px; padding: 12px 14px; margin-top: 8px; position: relative; overflow: hidden;
+    border-radius: 14px; padding: 13px 14px; margin-top: 8px;
+    position: relative; overflow: hidden;
   }
   .event-card::before {
     content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
-    background: linear-gradient(180deg, var(--accent), var(--accent2));
+    background: linear-gradient(180deg, #7c6af5, #a78bfa);
   }
-  .ev-title { font-weight: 600; font-size: 14px; margin-bottom: 6px; padding-left: 8px; }
-  .ev-meta { font-size: 12px; color: var(--muted); padding-left: 8px; display: flex; flex-direction: column; gap: 3px; }
-  .ev-actions { display: flex; gap: 8px; margin-top: 10px; padding-left: 8px; flex-wrap: wrap; }
+  .ev-title { font-weight: 700; font-size: 14px; margin-bottom: 6px; padding-left: 10px; }
+  .ev-meta { font-size: 12px; color: var(--muted); padding-left: 10px; display: flex; flex-direction: column; gap: 3px; }
+  .ev-actions { display: flex; gap: 8px; margin-top: 12px; padding-left: 10px; flex-wrap: wrap; }
   .ev-btn {
-    padding: 7px 14px; border-radius: 8px; font-size: 12px; font-weight: 500;
-    cursor: pointer; border: none; transition: all 0.15s;
+    padding: 8px 15px; border-radius: 9px; font-size: 12px; font-weight: 600;
+    cursor: pointer; border: none; transition: all 0.15s; user-select: none;
   }
   .ev-btn.primary { background: var(--accent); color: white; }
+  .ev-btn.primary:active { background: var(--accent2); transform: scale(0.97); }
   .ev-btn.secondary { background: transparent; border: 1px solid var(--border); color: var(--muted); }
+  .ev-btn.secondary:active { background: var(--surface2); }
 
+  /* TOAST */
   .toast {
-    position: fixed; top: 60px; left: 50%;
-    transform: translateX(-50%) translateY(-10px);
+    position: fixed; top: calc(var(--safe-top) + 56px); left: 50%;
+    transform: translateX(-50%) translateY(-8px);
     background: var(--surface2); border: 1px solid var(--border);
-    padding: 8px 16px; border-radius: 20px; font-size: 13px;
-    opacity: 0; transition: all 0.3s; pointer-events: none; z-index: 100; white-space: nowrap;
+    padding: 9px 18px; border-radius: 22px; font-size: 13px;
+    opacity: 0; transition: all 0.25s; pointer-events: none; z-index: 100;
+    white-space: nowrap; backdrop-filter: blur(8px);
   }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   .toast.success { border-color: var(--success); color: var(--success); }
   .toast.error { border-color: var(--error); color: var(--error); }
 
+  /* INPUT AREA */
   .input-area {
-    padding: 12px 16px; border-top: 1px solid var(--border); background: var(--surface); flex-shrink: 0;
+    padding: 10px 12px 10px;
+    border-top: 1px solid var(--border);
+    background: var(--surface); flex-shrink: 0;
   }
   .input-row { display: flex; gap: 8px; align-items: flex-end; }
   .input-wrap {
     flex: 1; background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 16px; display: flex; align-items: flex-end;
-    padding: 8px 12px; gap: 8px; transition: border-color 0.2s;
+    border-radius: 18px; display: flex; align-items: flex-end;
+    padding: 9px 13px; gap: 8px; transition: border-color 0.2s;
   }
   .input-wrap:focus-within { border-color: var(--accent); }
-  .input-wrap.recording { border-color: var(--red); animation: pulse-border 1s infinite; }
+  .input-wrap.recording {
+    border-color: var(--red);
+    box-shadow: 0 0 0 2px rgba(239,68,68,0.15);
+    animation: pulse-border 1s infinite;
+  }
   @keyframes pulse-border {
-    0%,100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); }
-    50% { box-shadow: 0 0 0 3px rgba(239,68,68,0.2); }
+    0%,100% { box-shadow: 0 0 0 2px rgba(239,68,68,0.1); }
+    50% { box-shadow: 0 0 0 4px rgba(239,68,68,0.2); }
   }
   textarea {
     flex: 1; background: none; border: none; outline: none;
-    color: var(--text); font-size: 14px; resize: none;
+    color: var(--text); font-size: 15px; resize: none;
     max-height: 100px; line-height: 1.4; font-family: inherit;
   }
   textarea::placeholder { color: var(--muted); }
+
+  /* MIC BUTTON */
   .mic-btn {
-    width: 36px; height: 36px; border-radius: 10px; border: 1px solid var(--border);
+    width: 42px; height: 42px; border-radius: 13px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
     cursor: pointer; display: flex; align-items: center; justify-content: center;
-    font-size: 17px; flex-shrink: 0; transition: all 0.15s;
-    background: var(--surface2); color: var(--muted);
+    flex-shrink: 0; transition: all 0.15s; color: var(--muted);
   }
-  .mic-btn.recording { background: var(--red); border-color: var(--red); color: white; animation: mic-pulse 0.8s infinite alternate; }
-  @keyframes mic-pulse { from { transform: scale(1); } to { transform: scale(1.08); } }
+  .mic-btn svg { width: 20px; height: 20px; }
+  .mic-btn:active { background: var(--surface); }
+  .mic-btn.recording {
+    background: var(--red); border-color: var(--red);
+    box-shadow: 0 0 16px rgba(239,68,68,0.4);
+    animation: mic-pulse 0.7s infinite alternate;
+  }
+  .mic-btn.recording svg { stroke: white; }
+  @keyframes mic-pulse { from { transform: scale(1); } to { transform: scale(1.07); } }
+
+  /* SEND BUTTON */
   .send-btn {
-    width: 36px; height: 36px; background: var(--accent); border: none;
-    border-radius: 10px; cursor: pointer; display: flex; align-items: center;
-    justify-content: center; flex-shrink: 0; font-size: 16px; color: white;
+    width: 42px; height: 42px;
+    background: linear-gradient(135deg, #7c6af5, #a78bfa);
+    border: none; border-radius: 13px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; box-shadow: 0 2px 10px rgba(124,106,245,0.4);
     transition: all 0.15s;
   }
-  .send-btn:active { background: var(--accent2); }
-  .hint { font-size: 11px; color: var(--muted); text-align: center; margin-top: 6px; }
+  .send-btn svg { width: 18px; height: 18px; stroke: white; }
+  .send-btn:active { transform: scale(0.94); box-shadow: none; }
+
+  .hint { font-size: 11px; color: var(--muted); text-align: center; margin-top: 7px; }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <div class="header-icon">🔔</div>
+  <div class="app-icon">
+    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="20" cy="16" r="8" stroke="white" stroke-width="2.5" fill="none"/>
+      <rect x="18" y="24" width="4" height="7" rx="2" fill="white"/>
+      <rect x="12" y="30" width="16" height="3" rx="1.5" fill="white"/>
+      <circle cx="20" cy="16" r="3" fill="white"/>
+      <rect x="19" y="8" width="2" height="4" rx="1" fill="white"/>
+    </svg>
+  </div>
   <div class="header-info">
     <h1>Recordá</h1>
     <p>Hablá o escribí en lenguaje natural</p>
   </div>
+  <div class="header-time" id="headerTime"></div>
 </div>
 
 <div class="chat" id="chat">
   <div class="welcome" id="welcome">
-    <div class="welcome-icon">🎙️</div>
+    <div class="welcome-logo">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="20" cy="16" r="9" stroke="white" stroke-width="2.5" fill="none"/>
+        <rect x="18" y="25" width="4" height="7" rx="2" fill="white"/>
+        <rect x="11" y="31" width="18" height="3.5" rx="1.75" fill="white"/>
+        <circle cx="20" cy="16" r="3.5" fill="white"/>
+        <rect x="18.5" y="7" width="3" height="5" rx="1.5" fill="white"/>
+      </svg>
+    </div>
     <h2>¿Qué querés recordar?</h2>
     <p>Tocá el micrófono y hablá, o escribí como si le mandaras un mensaje a un amigo.</p>
     <div class="chips">
@@ -160,22 +263,41 @@
       <textarea id="input" placeholder="Escribí o usá el micrófono…" rows="1"
         onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
     </div>
-    <button class="mic-btn" id="micBtn" onclick="toggleMic()">🎙️</button>
-    <button class="send-btn" id="sendBtn" onclick="sendMessage()">➤</button>
+    <button class="mic-btn" id="micBtn" onclick="toggleMic()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="9" y="3" width="6" height="11" rx="3"/>
+        <path d="M5 10a7 7 0 0 0 14 0"/>
+        <line x1="12" y1="19" x2="12" y2="22"/>
+        <line x1="8" y1="22" x2="16" y2="22"/>
+      </svg>
+    </button>
+    <button class="send-btn" onclick="sendMessage()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="22" y1="2" x2="11" y2="13"/>
+        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+      </svg>
+    </button>
   </div>
-  <div class="hint" id="hint">Toca el micrófono y dictá tu recordatorio</div>
+  <div class="hint" id="hint">Tocá el micrófono y dictá tu recordatorio</div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// ── SPEECH RECOGNITION ──────────────────────────────────────────
-const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-let recognition = null;
-let isRecording = false;
+// ── CLOCK ────────────────────────────────────────────────────────
+function updateClock() {
+  const now = new Date();
+  document.getElementById('headerTime').textContent =
+    now.toLocaleTimeString('es-AR', { hour:'2-digit', minute:'2-digit' });
+}
+updateClock(); setInterval(updateClock, 10000);
 
-if (SpeechRecognition) {
-  recognition = new SpeechRecognition();
+// ── SPEECH RECOGNITION ──────────────────────────────────────────
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recognition = null, isRecording = false;
+
+if (SR) {
+  recognition = new SR();
   recognition.lang = 'es-AR';
   recognition.continuous = false;
   recognition.interimResults = true;
@@ -183,13 +305,11 @@ if (SpeechRecognition) {
   recognition.onstart = () => {
     isRecording = true;
     document.getElementById('micBtn').classList.add('recording');
-    document.getElementById('micBtn').textContent = '⏹';
     document.getElementById('inputWrap').classList.add('recording');
-    document.getElementById('hint').textContent = 'Escuchando… hablá ahora';
+    document.getElementById('hint').textContent = '🔴 Escuchando… hablá ahora';
     document.getElementById('input').value = '';
-    document.getElementById('input').placeholder = '🔴 Grabando…';
+    document.getElementById('input').placeholder = 'Grabando…';
   };
-
   recognition.onresult = (e) => {
     let final = '', interim = '';
     for (let i = e.resultIndex; i < e.results.length; i++) {
@@ -199,57 +319,47 @@ if (SpeechRecognition) {
     document.getElementById('input').value = final || interim;
     autoResize(document.getElementById('input'));
   };
-
   recognition.onend = () => {
-    stopRecordingUI();
+    stopRecUI();
     const text = document.getElementById('input').value.trim();
-    if (text) setTimeout(() => sendMessage(), 300);
+    if (text) setTimeout(sendMessage, 300);
   };
-
   recognition.onerror = (e) => {
-    stopRecordingUI();
+    stopRecUI();
     if (e.error === 'not-allowed') showToast('Permiso de micrófono denegado', 'error');
   };
 } else {
   document.getElementById('micBtn').style.display = 'none';
-  document.getElementById('hint').textContent = 'Escribí tu recordatorio y presioná Enter';
+  document.getElementById('hint').textContent = 'Escribí tu recordatorio y presioná enviar';
 }
 
-function stopRecordingUI() {
+function stopRecUI() {
   isRecording = false;
   document.getElementById('micBtn').classList.remove('recording');
-  document.getElementById('micBtn').textContent = '🎙️';
   document.getElementById('inputWrap').classList.remove('recording');
-  document.getElementById('hint').textContent = 'Toca el micrófono y dictá tu recordatorio';
+  document.getElementById('hint').textContent = 'Tocá el micrófono y dictá tu recordatorio';
   document.getElementById('input').placeholder = 'Escribí o usá el micrófono…';
 }
-
 function toggleMic() {
   if (!recognition) { showToast('Micrófono no disponible', 'error'); return; }
-  if (isRecording) recognition.stop();
-  else recognition.start();
+  if (isRecording) recognition.stop(); else recognition.start();
 }
 
 // ── NLP LOCAL ───────────────────────────────────────────────────
-const DIAS = { lunes:1, martes:2, miércoles:3, miercoles:3, jueves:4, viernes:5, sábado:6, sabado:6, domingo:0 };
+const DIAS  = { lunes:1, martes:2, miercoles:3, jueves:4, viernes:5, sabado:6, domingo:0 };
 const MESES = { enero:0, febrero:1, marzo:2, abril:3, mayo:4, junio:5, julio:6, agosto:7, septiembre:8, octubre:9, noviembre:10, diciembre:11 };
 
+function norm(s) { return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''); }
+
 function parseReminder(text) {
-  const t = text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  const t = norm(text);
   const now = new Date();
-  let date = null, hour = null, min = 0, title = text;
+  let date = null, hour = null, min = 0;
 
-  // ── FECHA ──
-  // "hoy"
+  // FECHA
   if (/\bhoy\b/.test(t)) date = new Date(now);
-
-  // "mañana"
-  else if (/\bmanana\b/.test(t)) { date = new Date(now); date.setDate(date.getDate()+1); }
-
-  // "pasado mañana"
   else if (/pasado manana/.test(t)) { date = new Date(now); date.setDate(date.getDate()+2); }
-
-  // "el lunes/martes/..." → próximo día de semana
+  else if (/\bmanana\b/.test(t)) { date = new Date(now); date.setDate(date.getDate()+1); }
   else {
     for (const [nombre, dow] of Object.entries(DIAS)) {
       if (new RegExp('\\b'+nombre+'\\b').test(t)) {
@@ -260,74 +370,61 @@ function parseReminder(text) {
       }
     }
   }
-
-  // "el 15 de junio" / "15/06" / "15-06"
   if (!date) {
-    const mMatch = t.match(/(\d{1,2})\s+de\s+([a-z]+)/);
-    if (mMatch && MESES[mMatch[2]] !== undefined) {
-      date = new Date(now.getFullYear(), MESES[mMatch[2]], parseInt(mMatch[1]));
+    const mM = t.match(/(\d{1,2})\s+de\s+([a-z]+)/);
+    if (mM && MESES[mM[2]] !== undefined) {
+      date = new Date(now.getFullYear(), MESES[mM[2]], parseInt(mM[1]));
       if (date < now) date.setFullYear(date.getFullYear()+1);
     }
-    const dMatch = t.match(/(\d{1,2})[\/\-](\d{1,2})/);
-    if (!date && dMatch) {
-      date = new Date(now.getFullYear(), parseInt(dMatch[2])-1, parseInt(dMatch[1]));
+    const dM = t.match(/(\d{1,2})[\/\-](\d{1,2})/);
+    if (!date && dM) {
+      date = new Date(now.getFullYear(), parseInt(dM[2])-1, parseInt(dM[1]));
       if (date < now) date.setFullYear(date.getFullYear()+1);
     }
   }
+  if (!date) date = new Date(now);
 
-  if (!date) date = new Date(now); // fallback: hoy
-
-  // ── HORA ──
-  // "a las 15:30" / "15h30" / "15hs" / "3pm" / "3 pm"
-  const hPatterns = [
-    /a las\s+(\d{1,2})(?::(\d{2}))?\s*hs?/,
-    /a las\s+(\d{1,2})(?::(\d{2}))?/,
-    /(\d{1,2})h(\d{2})/,
-    /(\d{1,2})\s*hs/,
-    /(\d{1,2}):(\d{2})/,
-    /(\d{1,2})\s*am/,
-    /(\d{1,2})\s*pm/,
-    /(\d{1,2})\s*am/,
+  // HORA
+  const hPs = [
+    [/a las\s+(\d{1,2})(?::(\d{2}))?\s*hs?/, false],
+    [/a las\s+(\d{1,2})(?::(\d{2}))?/, false],
+    [/(\d{1,2})h(\d{2})/, false],
+    [/(\d{1,2})\s*hs/, false],
+    [/(\d{1,2}):(\d{2})/, false],
+    [/(\d{1,2})\s*pm/, true],
+    [/(\d{1,2})\s*am/, false],
   ];
-  for (const p of hPatterns) {
+  for (const [p, isPM] of hPs) {
     const m = t.match(p);
     if (m) {
-      hour = parseInt(m[1]);
-      min  = m[2] ? parseInt(m[2]) : 0;
-      if (/pm/.test(t.slice(t.search(p))) && hour < 12) hour += 12;
-      if (/am/.test(t.slice(t.search(p))) && hour === 12) hour = 0;
+      hour = parseInt(m[1]); min = m[2] ? parseInt(m[2]) : 0;
+      if (isPM && hour < 12) hour += 12;
       break;
     }
   }
-
-  // frases horarias
   if (hour === null) {
-    if (/\bmanana\b.*\bmanana\b|por la manana/.test(t)) { hour = 9; min = 0; }
-    else if (/mediodia|medío dia/.test(t)) { hour = 12; min = 0; }
-    else if (/tarde/.test(t)) { hour = 15; min = 0; }
-    else if (/noche/.test(t)) { hour = 21; min = 0; }
-    else if (/manana/.test(t) && !/\bhoy\b/.test(t)) { hour = 9; min = 0; }
-    else { hour = now.getHours()+1; min = 0; }
+    if (/por la manana/.test(t)) { hour=9; min=0; }
+    else if (/mediodia/.test(t)) { hour=12; min=0; }
+    else if (/tarde/.test(t)) { hour=15; min=0; }
+    else if (/noche/.test(t)) { hour=21; min=0; }
+    else { hour=now.getHours()+1; min=0; }
   }
-
   date.setHours(hour, min, 0, 0);
 
-  // ── TÍTULO ──
-  // Limpiar palabras de tiempo del texto para quedarse con el "qué"
+  // TÍTULO — quitar palabras de tiempo
   let clean = text
-    .replace(/recordame|recordarme|recordar|recorda|quiero recordar|poneme|anotame/gi, '')
-    .replace(/hoy|mañana|pasado mañana/gi, '')
-    .replace(/el (lunes|martes|miércoles|jueves|viernes|sábado|domingo)/gi, '')
-    .replace(/a las \d{1,2}(:\d{2})?\s*(hs?|am|pm)?/gi, '')
-    .replace(/\d{1,2}h\d{2}/gi, '')
-    .replace(/\d{1,2}\s*hs/gi, '')
-    .replace(/\d{1,2}\s*(am|pm)/gi, '')
-    .replace(/el \d{1,2} de \w+/gi, '')
-    .replace(/\d{1,2}[\/\-]\d{1,2}/gi, '')
-    .replace(/\s+/g, ' ').trim();
-
+    .replace(/recordame|recordarme|recordar|recorda|quiero que me recuerdes?|poneme|anotame|ponele/gi,'')
+    .replace(/hoy|mañana|pasado mañana/gi,'')
+    .replace(/el\s+(lunes|martes|miércoles|jueves|viernes|sábado|domingo)/gi,'')
+    .replace(/a las \d{1,2}(:\d{2})?\s*(hs?|am|pm)?/gi,'')
+    .replace(/\d{1,2}h\d{2}/gi,'')
+    .replace(/\d{1,2}\s*hs/gi,'')
+    .replace(/\d{1,2}\s*(am|pm)/gi,'')
+    .replace(/el \d{1,2} de \w+/gi,'')
+    .replace(/\d{1,2}[\/\-]\d{1,2}/gi,'')
+    .replace(/\s+/g,' ').trim();
   if (!clean || clean.length < 3) clean = text;
-  title = clean.charAt(0).toUpperCase() + clean.slice(1);
+  const title = clean.charAt(0).toUpperCase() + clean.slice(1);
 
   return { title, date };
 }
@@ -336,44 +433,41 @@ function parseReminder(text) {
 let pendingEvent = null;
 
 function handleKey(e) {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
 }
-function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight,100)+'px'; }
-function useChip(el) { document.getElementById('input').value = el.textContent; sendMessage(); }
-function hideWelcome() { const w = document.getElementById('welcome'); if (w) w.remove(); }
+function autoResize(el) { el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,100)+'px'; }
+function useChip(el) { document.getElementById('input').value=el.textContent; sendMessage(); }
+function hideWelcome() { const w=document.getElementById('welcome'); if(w) w.remove(); }
 
 function appendMsg(role, content) {
   hideWelcome();
   const chat = document.getElementById('chat');
   const div = document.createElement('div');
-  div.className = 'msg ' + role;
-  if (typeof content === 'string') div.innerHTML = `<div class="bubble">${content}</div>`;
+  div.className = 'msg '+role;
+  if (typeof content==='string') div.innerHTML=`<div class="bubble">${content}</div>`;
   else div.appendChild(content);
   chat.appendChild(div);
   chat.scrollTop = chat.scrollHeight;
 }
 
 function showToast(msg, type='') {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.className = 'toast show ' + type;
-  setTimeout(() => t.className = 'toast', 2500);
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast show '+type;
+  setTimeout(()=>t.className='toast', 2500);
 }
 
 function sendMessage() {
-  const input = document.getElementById('input');
-  const text = input.value.trim();
+  const input=document.getElementById('input');
+  const text=input.value.trim();
   if (!text) return;
-  input.value = ''; input.style.height = 'auto';
-
+  input.value=''; input.style.height='auto';
   appendMsg('user', escHtml(text));
-
-  const { title, date } = parseReminder(text);
-  pendingEvent = { title, date };
-
-  const wrap = document.createElement('div');
-  wrap.className = 'bubble';
-  wrap.innerHTML = `
-    <div style="font-size:13px;color:var(--muted);margin-bottom:6px;">Entendí esto:</div>
+  const {title, date} = parseReminder(text);
+  pendingEvent = {title, date};
+  const wrap=document.createElement('div');
+  wrap.className='bubble';
+  wrap.innerHTML=`
+    <div style="font-size:12px;color:var(--muted);margin-bottom:6px;">Entendí esto:</div>
     <div class="event-card">
       <div class="ev-title">📌 ${escHtml(title)}</div>
       <div class="ev-meta">
@@ -383,37 +477,33 @@ function sendMessage() {
         <button class="ev-btn primary" onclick="confirmEvent()">📅 Agregar al calendario</button>
         <button class="ev-btn secondary" onclick="cancelEvent(this)">Descartar</button>
       </div>
-    </div>
-  `;
+    </div>`;
   appendMsg('ai', wrap);
 }
 
 function confirmEvent() {
   if (!pendingEvent) return;
-  const { title, date } = pendingEvent;
-  const end = new Date(date.getTime() + 60*60000);
+  const {title, date} = pendingEvent;
+  const end = new Date(date.getTime()+3600000);
   const fmt = d => d.toISOString().replace(/[-:]/g,'').split('.')[0]+'Z';
   const url = `https://calendar.google.com/calendar/render?action=TEMPLATE`
-    + `&text=${encodeURIComponent(title)}`
-    + `&dates=${fmt(date)}/${fmt(end)}`
-    + `&ctz=America/Argentina/Buenos_Aires`;
-  window.open(url, '_blank');
-  showToast('Abriendo Google Calendar…', 'success');
-  appendMsg('ai', `✅ Abrí Google Calendar con <strong>${escHtml(title)}</strong> listo para confirmar.`);
-  pendingEvent = null;
+    +`&text=${encodeURIComponent(title)}`
+    +`&dates=${fmt(date)}/${fmt(end)}`
+    +`&ctz=America/Argentina/Buenos_Aires`;
+  window.open(url,'_blank');
+  showToast('Abriendo Google Calendar…','success');
+  appendMsg('ai',`✅ <strong>${escHtml(title)}</strong> listo para confirmar en Google Calendar.`);
+  pendingEvent=null;
 }
 
 function cancelEvent(btn) {
-  btn.closest('.bubble').querySelector('.ev-actions').innerHTML =
+  btn.closest('.bubble').querySelector('.ev-actions').innerHTML=
     '<span style="font-size:12px;color:var(--muted)">Descartado.</span>';
-  pendingEvent = null;
+  pendingEvent=null;
 }
 
 function formatDate(d) {
-  return d.toLocaleString('es-AR', {
-    weekday:'long', day:'numeric', month:'long',
-    hour:'2-digit', minute:'2-digit'
-  });
+  return d.toLocaleString('es-AR',{weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'});
 }
 function escHtml(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
